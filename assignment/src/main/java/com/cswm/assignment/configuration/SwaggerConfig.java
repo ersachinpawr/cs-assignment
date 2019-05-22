@@ -16,12 +16,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {                                    
-    @Bean
+    private static final String BASE_PACKAGE = "com.cswm.assignment.controller";
+
+	@Bean
     public Docket api() { 
         return new Docket(DocumentationType.SWAGGER_2) 
           .apiInfo(apiInfo())
           .select()   
-          .apis(RequestHandlerSelectors.basePackage("com.cswm.assignment.controller"))              
+          .apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))              
           .paths(PathSelectors.any())                       
           .build();    
         

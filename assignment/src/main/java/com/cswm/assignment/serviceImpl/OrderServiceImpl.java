@@ -81,6 +81,8 @@ public class OrderServiceImpl implements OrderService {
 		logger.info("completeDeltaQty() Method called with argument :: (" + addedExecution + "," + effectiveQuanty + "," + updatedValidOrders.toString() + ");");
 		List<Order> updatedValidOrderList = new ArrayList<>();
 		outer: while (addedExecution <= effectiveQuanty) {
+			if (addedExecution.equals(effectiveQuanty))
+				break outer;
 			for (Order order : updatedValidOrders) {
 				if (addedExecution.equals(effectiveQuanty))
 					break outer;
