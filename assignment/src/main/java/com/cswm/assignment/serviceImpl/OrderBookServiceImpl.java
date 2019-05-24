@@ -137,7 +137,7 @@ public class OrderBookServiceImpl implements OrderBookService {
 		OrderBo orderDto = new ModelMapper().map(addOrderInputDto, OrderBo.class);
 		if (null == orderDto.getOrderDetails())
 			orderDto.setOrderDetails(new OrderDetailsBo());
-		if (null == orderDto.getOrderprice() || orderDto.getOrderprice() == BigDecimal.ZERO) {
+		if (null == orderDto.getOrderprice()) {
 			logger.info("createOrderBook() Method  :: No order Price is provided in order creation hence marking order as MARKET ORDER");
 			orderDto.getOrderDetails().setOrderType(OrderType.MARKET_ORDER);
 		} else {
@@ -193,6 +193,10 @@ public class OrderBookServiceImpl implements OrderBookService {
 			throw new ApplicationException(ErrorMessageEnum.ORDER_BOOK_NOT_CLOSED);
 		if (!CollectionUtils.isEmpty(orderBook.getExecutions()) && !(executionInputDto.getPrice().compareTo(orderBook.getExecutions().iterator().next().getPrice()) == 0))
 			throw new ApplicationException(ErrorMessageEnum.EXECUTION_PRICE_INVALID);
+		if(null==orderBook.getOrders()||CollectionUtils.isEmpty(orderBook.getOrders()))
+		{
+			throw new ApplicationException(ErrorMessageEnum.ORDER_BOOK_WITHOUT_ORDERS);
+		}
 		ExecutionBo executionDto = new ModelMapper().map(executionInputDto, ExecutionBo.class);
 		executionDto.setOrderBook(new ModelMapper().map(orderBook, OrderBookBo.class));
 		Set<Order> validOrders = new HashSet<Order>();

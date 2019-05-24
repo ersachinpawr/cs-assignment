@@ -13,6 +13,11 @@ insert into order_book_inv(order_book_id,instrument_id,order_Book_Status,created
 insert into order_book_inv(order_book_id,instrument_id,order_Book_Status,created_by,created_on)
  values(1003,4,'CLOSED','Default User',sysdate);
  
+   insert into instrument_inv(instrument_id,created_by,created_on)
+ values(5,'Default User',sysdate);
+insert into order_book_inv(order_book_id,instrument_id,order_Book_Status,created_by,created_on)
+ values(1010,5,'CLOSED','Default User',sysdate);
+ 
  
   insert into ORDERS_DETAILS_INV(order_Details_id,order_status,order_type,execution_quantity,)
  values(2004,'VALID','LIMIT_ORDER',0);

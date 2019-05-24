@@ -97,6 +97,28 @@ public class orderBookTest extends AbstractTest {
 		assertEquals(OrderStatus.VALID, addedOrderDto.getOrderDetails().getOrderStatus());
 	}
 
+	//// Add order order to order book
+	@Test
+	public void addZeroPriceOrderToOrderBook() throws Exception {
+		/// add order to order book
+		String uri = "/orderbooks/1001/orders";
+		AddOrderInputDto addOrderInputDto = new AddOrderInputDto();
+		addOrderInputDto.setInstrumentId(2l);
+		addOrderInputDto.setOrderprice(BigDecimal.valueOf(0l));
+		addOrderInputDto.setOrderQuantity(100l);
+		String inputJson = super.mapToJson(addOrderInputDto);
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri).contentType(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
+		int status = mvcResult.getResponse().getStatus();
+		String content = mvcResult.getResponse().getContentAsString();
+		OrderOutputDto addedOrderDto = mapFromJson(content, OrderOutputDto.class);
+		assertEquals(200, status);
+		assertNotEquals(null, addedOrderDto.getInstrument());
+		assertEquals(2l, addedOrderDto.getInstrument().getInstrumentId().longValue());
+		assertEquals(OrderType.LIMIT_ORDER, addedOrderDto.getOrderDetails().getOrderType());
+		assertEquals(OrderStatus.VALID, addedOrderDto.getOrderDetails().getOrderStatus());
+	}
+	
+	
 	@Test
 	public void addMarketOrderToOrderBook() throws Exception {
 		/// add order to order book
@@ -241,6 +263,23 @@ public class orderBookTest extends AbstractTest {
 			}
 		});
 		assertEquals(200, status);
+	}
+	
+	
+	/// Add executions to orderbook without any orders /////
+	@Test
+	public void addExecutionToOrderBookWithNoOrders() throws Exception {
+		String uri = "/orderbooks/1010/execution";
+		ExecutionInputDto executionInputDto = new ExecutionInputDto();
+		executionInputDto.setPrice(BigDecimal.valueOf(40l));
+		executionInputDto.setQuantity(40l);
+		String inputJson = super.mapToJson(executionInputDto);
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri).contentType(MediaType.APPLICATION_JSON).content(inputJson)).andReturn();
+		int status = mvcResult.getResponse().getStatus();
+		String content = mvcResult.getResponse().getContentAsString();
+		Message message = mapFromJson(content, Message.class);
+		assertEquals(406, status);
+		assertEquals(ErrorMessageEnum.ORDER_BOOK_WITHOUT_ORDERS.getMessage(), message.getMessage());
 	}
 
 	@Test
